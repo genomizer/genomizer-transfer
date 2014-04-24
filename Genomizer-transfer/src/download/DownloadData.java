@@ -5,11 +5,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 public class DownloadData extends Thread {
 
-	private int chunkSize = 1000;
+	private int chunkSize = 1000000;
 	private String filePath;
 
 	private Socket socket;
@@ -23,20 +22,29 @@ public class DownloadData extends Thread {
 	@Override
 	public void start() {
 
-			try {
-				byte[] byteArray = new byte[chunkSize];
-				FileOutputStream fos = new FileOutputStream(filePath);
-				InputStream is = socket.getInputStream();
-				BufferedOutputStream bos = new BufferedOutputStream(fos);
-				int bytesRead = is.read(byteArray, 0, byteArray.length);
-			    bos.write(byteArray, 0, byteArray.length);
-			    bos.close();
-			    socket.close();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
+		try {
+			byte[] byteArray = new byte[chunkSize];
+			FileOutputStream fos = new FileOutputStream(filePath);
+			InputStream is = socket.getInputStream();
+			BufferedOutputStream bos = new BufferedOutputStream(fos);
+
+			int bytesRead = 0;
+			while (bytesRead != -1) {
+
+				bytesRead = is.read(byteArray, 0, byteArray.length);
+
+				if (bytesRead != -1) {
+					bos.write(byteArray, 0, bytesRead);
+				}
 			}
+
+			bos.close();
+			socket.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 	}
 
