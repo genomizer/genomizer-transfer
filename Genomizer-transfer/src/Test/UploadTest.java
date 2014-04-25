@@ -17,6 +17,8 @@ public class UploadTest {
 
 	private TempDatatransferer datatransferer;
 
+	
+	
 	@Before
 	public void setup() {
 		try {
